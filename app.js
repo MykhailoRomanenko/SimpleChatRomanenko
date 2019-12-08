@@ -9,6 +9,7 @@ let messagesInBase = 0;
 const MESSAGE_LIMIT = 500;
 const CHAR_LIMIT = 500;
 
+//const a = 1;
 
 //set the template engine ejs
 app.set('view engine', 'ejs');
@@ -21,8 +22,8 @@ app.get('/', (req, res) => {
 });
 
 //Listen on port 4000
-server = app.listen(process.env.PORT||5000);
-
+//server = app.listen(process.env.PORT||5000);
+server = app.listen(4000);
 //server = app.listen(4000);
 
 

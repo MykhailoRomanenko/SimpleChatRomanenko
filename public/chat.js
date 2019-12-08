@@ -5,7 +5,6 @@ $(document).ready(function () {
     var socket = io();
 
     //buttons and input
-
     var message_input = $("#message");
     var login = $("#username");
     var password = $("#password");
