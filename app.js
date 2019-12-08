@@ -2,8 +2,6 @@ const express = require('express');
 const encryptor = require('password-hash');
 const mysql = require('mysql');
 const app = express();
-const  PORT = process.env.PORT || 8000;
-server = app.listen(PORT);
 let online = 0;
 let messageID = 0;
 let firstMessageID = 0;
@@ -23,6 +21,8 @@ app.get('/', (req, res) => {
 });
 
 //Listen on port 4000
+server = app.listen(process.env.PORT||5000);
+
 //server = app.listen(4000);
 
 
