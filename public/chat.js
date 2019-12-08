@@ -1,24 +1,24 @@
 $(document).ready(function () {
+    const MAX_SGN_IN_LENGTH = 45;
     //make connection
-    var socket = io.connect('http://localhost:4000');
+    //var socket = io.connect('http://localhost:4000');
+    var socket = io();
 
     //buttons and input
 
     var message_input = $("#message");
-    var username = $("#username");
+    var login = $("#username");
+    var password = $("#password");
     var send_message = $("#send_message");
     var send_username = $("#send_username");
     var chatroom = $("#chatroom");
-    var feedback = $("#feedback");
-    //Emit message
+
+
     send_message.click(function () {
-        let today = new Date();
-        let hrs = today.getHours();
-        let min = today.getMinutes();
-        let sec = today.getSeconds();
         var msg = {
             message: message_input.val(),
-            time: (hrs < 10 ? "0" + hrs.toString() : hrs) + ":" + (min < 10 ? "0" + min.toString() : min) + ":" + (sec < 10 ? "0" + sec.toString() : sec)
+            time: getTime(),
+            author: socket.username
         };
         if (msg.message.length === 0)
             return;
@@ -27,24 +27,28 @@ $(document).ready(function () {
     });
     //Listen on new_message
     socket.on("new_message", (data) => {
-        //feedback.html('');
-        //message_input.val('');
-        chatroom.append("<div class='message'><div class = 'message-head'><span>" + data.username + ":</span><span>" + data.time + "</span></div>" +
+        chatroom.append("<div class='message'><div class = 'message-head'><span>" + data.username + " at " + data.time + ": </span><span class = delete>+</span></div>" +
             "<div class='message-text'>" + data.message + "</div> </div>");
     });
 
     //Emit a username
     send_username.click(function () {
-        socket.emit('change_username', {username: login.val()})
+        let lg = login.val();
+        let ps = password.val();
+        if (lg === undefined || ps === undefined || lg.length === 0 || ps.length === 0 || lg.length > MAX_SGN_IN_LENGTH || ps.length > MAX_SGN_IN_LENGTH){
+            alert("You have either entered nothing or more than maximum characters, which are "+MAX_SGN_IN_LENGTH+".");
+            return;
+        }
+        login.val('');
+        password.val('');
+        socket.emit('change_username', {login: lg, password: ps})
     });
 
-    //Emit typing
-    message_input.bind("keypress", () => {
-        socket.emit('typing')
-    });
-
-    //Listen on typing
-    // socket.on('user_connected', (users_online) => {
-    //     feedback.html("<p><i>" + users_online + " users are currently online." + "</i></p>")
-    // });
+    function getTime() {
+        let today = new Date();
+        let hrs = today.getHours();
+        let min = today.getMinutes();
+        let sec = today.getSeconds();
+        return (hrs < 10 ? "0" + hrs.toString() : hrs) + ":" + (min < 10 ? "0" + min.toString() : min) + ":" + (sec < 10 ? "0" + sec.toString() : sec);
+    }
 });
