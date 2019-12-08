@@ -22,8 +22,8 @@ app.get('/', (req, res) => {
 });
 
 //Listen on port 4000
-//server = app.listen(process.env.PORT||5000);
-server = app.listen(4000);
+server = app.listen(process.env.PORT||5000);
+//server = app.listen(4000);
 //server = app.listen(4000);
 
 
