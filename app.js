@@ -72,7 +72,7 @@ function createUser(data, socket) {
 
 function getTime() {
     let today = new Date();
-    let hrs = today.getHours()+2;
+    let hrs = (today.getHours()+2)%24;
     let min = today.getMinutes();
     let sec = today.getSeconds();
     return (hrs < 10 ? "0" + hrs.toString() : hrs) + ":" + (min < 10 ? "0" + min.toString() : min) + ":" + (sec < 10 ? "0" + sec.toString() : sec);
@@ -160,6 +160,8 @@ io.on('connection', (socket) => {
     });
 
     socket.on('new_message', (data) => {
+        if(data.message.length>=CHAR_LIMIT)
+            return;
         data.message = xss(data.message);
         data.username = socket.username;
         addMessageSQL(data, socket);
