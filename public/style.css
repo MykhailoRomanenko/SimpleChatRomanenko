@@ -112,6 +112,7 @@ line-break: loose;
 .delete {
     transform: rotate(45deg);
     display: none;
+    cursor: pointer;
 }
 
 /*.align {*/
