@@ -2,6 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" const="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="style.css" >
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
     <title>Simple Chat App</title>
@@ -9,7 +10,7 @@
 
 <body>
 <header>
-    <h1>Super Chat</h1>
+    <h1>Chad</h1>
 </header>
 
 <section style = "text-align: center">
@@ -26,11 +27,12 @@
 
 
 <section id="input_zone">
-    <input id="message" class="vertical-align" type="text" />
-    <button id="send_message" class="vertical-align" type="button">Send</button>
+    <textarea id="message" class="align" type="text"></textarea>
+    <button id="send_message" type="button">Send</button>
 </section>
 
 <script src="jquery-3.4.1.min.js"></script>
 <script src="chat.js"></script>
+
 </body>
 </html>

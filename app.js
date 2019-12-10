@@ -8,8 +8,7 @@ let firstMessageID = 0;
 let messagesInBase = 0;
 const MESSAGE_LIMIT = 500;
 const CHAR_LIMIT = 500;
-
-//const a = 1;
+let xss = require('xss');
 
 //set the template engine ejs
 app.set('view engine', 'ejs');
@@ -58,7 +57,7 @@ const io = require("socket.io")(server);
 
 function createUser(data, socket) {
     data.password = encryptor.generate(data.password);
-    data.role = 2;
+    data.role = USER_ROLE;
     conn.query(
         "INSERT INTO `users` VALUES (?, ?, ?)",
         [data.login, data.password, data.role],
@@ -66,6 +65,7 @@ function createUser(data, socket) {
             console.log("User created");
             socket.username = data.login;
             socket.role = data.role;
+            socket.emit('admin', socket.role==ADMIN_ROLE);
         }
     )
 }
@@ -78,50 +78,59 @@ function getTime() {
     return (hrs < 10 ? "0" + hrs.toString() : hrs) + ":" + (min < 10 ? "0" + min.toString() : min) + ":" + (sec < 10 ? "0" + sec.toString() : sec);
 }
 
-function addMessageSQL(data) {
-    console.log(data.message);
-    console.log(data.username);
-    console.log(data.time);
-    let sql = "INSERT INTO `messages` VALUES (DEFAULT, ?, ?, ?)";
+function addMessageSQL(data, socket) {
+    console.log(data);
+    let sql = "INSERT INTO `messages` (`text`, `author`, `time`) VALUES (?, ?, ?)";
     let vals = [data.message, data.username, data.time];
-    sql = mysql.format(sql, vals);
-    conn.query(sql);
+    //let formattedSQL = mysql.format(sql, vals);
+    conn.query(sql, vals,
+        (err, res) => {
+            console.log(res.insertId);
+            data.id = res.insertId;
+            io.sockets.emit("new_message", data);
+            socket.emit('admin', socket.role==ADMIN_ROLE);
+        });
+
 }
 
-function notifyAboutConnection(name) {
-    io.sockets.emit('new_message', {
-        username: "SYSTEM",
-        message: name + ' has entered the chat.',
-        time: getTime()
-    })
+
+function notifyAboutConnection(name, socket){
+    addMessageSQL(systemMessage(name + ' has entered the chat.'), socket);
+
 }
 
 function displayPreviousMessages(socket) {
     conn.query(
         'SELECT * FROM `messages`',
         [],
-        (error, row)=>{
-            for(let i =0; i < row.length; ++i)
-            socket.emit('new_message' ,{message : row[i].text, time : row[i].time, username : row[i].author})
+        (error, row) => {
+            if (typeof row != 'undefined') {
+                for (let i = 0; i < row.length; ++i)
+                    socket.emit('new_message', {
+                        message: row[i].text,
+                        time: row[i].time,
+                        username: row[i].author,
+                        id: row[i].id,
+                    })
+            }
         }
     );
-
-
-
 }
 
-function systemMessage(text){
-    return {username:"SYSTEM", message: text, time : getTime()};
+function systemMessage(text) {
+    return {username: "SYSTEM", message: text, time: getTime()};
 }
 
 //listen on every connection
 io.on('connection', (socket) => {
-
+    console.log(socket);
     console.log('New user connected');
 
     socket.username = "Anonymous";
-
+    socket.role = USER_ROLE;
     socket.on('change_username', (data) => {
+        data.login = xss(data.login);
+        data.password = xss(data.password);
         conn.query(
             'SELECT * FROM `users` u WHERE u.login = ?',
             [data.login],
@@ -136,39 +145,44 @@ io.on('connection', (socket) => {
                         console.log("user is connected");
                         socket.username = data.login;
                         socket.role = res.role;
-                        notifyAboutConnection(data.login);
+                        notifyAboutConnection(data.login, socket);
+                        socket.emit('admin', socket.role==ADMIN_ROLE);
+
                     }
                 } else {
                     console.log("creating new user");
                     data.role = USER_ROLE;
                     createUser(data, socket);
-                    notifyAboutConnection(data.login);
+                    notifyAboutConnection(data.login, socket);
                 }
             }
         );
     });
 
     socket.on('new_message', (data) => {
+        data.message = xss(data.message);
         data.username = socket.username;
-        addMessageSQL(data);
-        conn.query('SELECT * FROM `messages` u WHERE u.')
-        io.sockets.emit('new_message', data);
+        addMessageSQL(data, socket);
+
+        //conn.query('SELECT * FROM `messages` u WHERE u.')
     });
 
+    socket.on('delete_message', (data) => {
+        conn.query('DELETE FROM `messages` WHERE id = ?', [data.id]);
+        io.sockets.emit('delete_message_from_html', data);
+    });
+
+
+//     socket.on('disconnect', (socket) => {
+//         --online;
+//         if (socket.username === "Anonymous")
+//             return;
+//         let message = systemMessage(socket.username + ' left the chat.');
+//         //io.sockets.emit('new_message', message);
+//         addMessageSQL(message, socket);
+//
+// });
     displayPreviousMessages(socket);
 
 
-
-
-
-
-});
-
-io.on('disconnection', (socket) => {
-    --online;
-    if(socket.username==="Anonymous")
-        return;
-    let message = systemMessage(socket.username + ' left the chat.');
-    io.sockets.emit('new_message', message);
-    addMessageSQL(message);
 });

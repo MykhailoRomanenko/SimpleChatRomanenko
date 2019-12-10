@@ -1,14 +1,19 @@
 * {
     box-sizing: border-box;
+    font-family: "Century Gothic", sans-serif;
+    color:#ffffff;
+
 }
 
 html {
     height: 100%;
+    background-color: #660000;
 }
 
 body {
     margin: 0;
     height: 100%;
+
 }
 
 header {
@@ -16,69 +21,81 @@ header {
 }
 
 h1 {
+    color: antiquewhite;
+    text-shadow: 0 0 5px #990000;
     margin: 0;
+    /*font-family: "Cooper Black", cursive;*/
 }
 
-div#change_username, section#input_zone {
-    border: 5px outset #8258FA;
+#change_username, #input_zone {
+    border: 5px outset #4d0000;
+    background-image: url("http://bgfons.com/uploads/paint/paint_texture2178.jpg");
+    /*background-size: cover;*/
+    /*background-position: center;*/
+    /*background-attachment: fixed;*/
+    height: 10%;
 }
 
-div#change_username {
+#change_username {
     height: 3%;
     display: inline-block;
-    background-color: #BCA9F5;
+    color: antiquewhite;
+    background-color: #990000;
 }
+#chatroom {
+    border: 5px solid #4d0000;
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 80%;
+    background-image: url("https://oren-m7.ru/images/500/DSC100579161.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
 
-section#chatroom {
-    border: 5px inset #8258FA;
-    height: 85%;
-    overflow: auto;
 }
-
-section#input_zone {
-    height: 7%;
-    text-align: center;
-    background-color: #BCA9F5;
-}
-
-.vertical-align {
-    position: relative;
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-}
-
-input#username {
-}
-
-input#message {
-    display: inline-block;
-    width: 88%;
-    height: 70%;
-    font-size: 2vh;
-}
-
-button#send_message {
-    display: inline-block;
-    height: 70%;
+#send_message {
     width: 10%;
 }
+input#username, input#password {
+    background-color: #cc0000;
+    /*border: 0;*/
+}
 
-p.message {
-    margin: 0;
-    width: 100%;
-    height: 40px;
+#message {
+    border: 0;
+    background-color: rgba(125, 10, 10, 0.7);
+    border-radius: 3px;
+    color: antiquewhite;
+    display: inline-block;
+    width: 90%;
+    height: 90%;
     font-size: 2vh;
-    padding: 1vh;
+    align-self:center;
+    resize:none;
+}
+
+/*.message {*/
+    /*margin: 0;*/
+    /*width: 90%;*/
+    /*height: 40px;*/
+    /*font-size: 7vw;*/
+    /*padding: 1%;*/
+    /*!*border-color: ;*!*/
+    /*border-radius: 5%;*/
+/*}*/
+
+.message{
+    padding: 5px 0;
 }
 
 .message:nth-child(even) {
-    background-color: #81DAF5;
+    background-color: rgba(100, 100, 100, 0.4);
 }
 
 .message:nth-child(odd) {
-    background-color: #81BEF7;
+     background-color: rgba(125, 125, 125, 0.4);
 }
 
 .message-head{
@@ -93,5 +110,80 @@ line-break: loose;
 }
 
 .delete {
-
+    transform: rotate(45deg);
+    display: none;
 }
+
+/*.align {*/
+    /*position: relative;*/
+    /*top: 30%;*/
+    /*-webkit-transform: translateY(-50%);*/
+    /*-ms-transform: translateY(-50%);*/
+    /*transform: translateY(-50%);*/
+/*}*/
+
+#input_zone {
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 10%;
+    text-align: center;
+    background-color: #990000;
+}
+
+button {
+    box-shadow:inset 1px 29px 3px -12px #b54b3a;
+    background-color:#a73f2d;
+    border-radius:15px;
+    border: 0px;
+    display:inline-block;
+    cursor:pointer;
+    color:#ffffff;
+    /*font-family:"Cooper Black";*/
+    font-size:14px;
+    padding:9px 13px;
+    height: 95%;
+    text-shadow:0px 0px 0px #7a2a1d;
+    outline: 0;
+}
+button:hover {
+    background-color:#b34332;
+}
+@media only screen and (max-width: 1024px){
+    #send_message {
+        width:20%;
+    }
+    #chatroom{
+        justify-self: center;
+        height: 70%;
+    }
+    header{
+        font-size: 0.8em;
+    }
+    #input_zone{
+        max-height: 15%;
+    }
+    #change_username{
+        display: flex;
+        flex-direction: column;
+        max-height: 10%;
+    }
+    html{
+        height: 85vh;
+    }
+    #change_username{
+        display: flex;
+    }
+    label, button {
+        font-size: 1.2em;
+    }
+    input{
+        font-size: 1.1em;
+    }
+
+
+    /*button*/
+}
+
