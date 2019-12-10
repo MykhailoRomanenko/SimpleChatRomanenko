@@ -72,7 +72,7 @@ function createUser(data, socket) {
 
 function getTime() {
     let today = new Date();
-    let hrs = today.getHours();
+    let hrs = today.getHours()+2;
     let min = today.getMinutes();
     let sec = today.getSeconds();
     return (hrs < 10 ? "0" + hrs.toString() : hrs) + ":" + (min < 10 ? "0" + min.toString() : min) + ":" + (sec < 10 ? "0" + sec.toString() : sec);
